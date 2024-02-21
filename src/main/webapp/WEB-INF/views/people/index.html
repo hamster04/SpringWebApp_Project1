@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        td {
+            border-style: groove;/* Параметры рамки */
+            padding: 4px;/* Расстояние от текста до рамки */
+            text-align: center;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+</head>
+<body>
+
+<div th:if="${people.isEmpty()}">
+    <h2>В нашей электронной библиотеке пока нет пользователей... :(</h2>
+</div>
+
+<div th:unless="${people.isEmpty()}">
+    <table style="width:100%" >
+        <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Год рождения</th>
+            <th>Есть ли взятые книги</th>
+            <th>Количество взятых книг</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="person : ${people}">
+            <td>
+                <a th:href="@{/people/{id}(id=${person.getId()})}" th:text="${person.getFullName()}"></a>
+            </td>
+            <td th:text="${person.getYearOfBorn()}"></td>
+            <td th:text="${personDAO.getBookByPersonId(person.getId()).isEmpty()} ? 'Нету' : 'Есть'"></td>
+            <td th:text="${personDAO.getBookByPersonId(person.getId()).isEmpty()} ?
+            '' :${personDAO.getBookByPersonId(person.getId()).size()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <hr/>
+
+</div>
+
+<form th:method="GET" th:action="@{/people/new}">
+    <input type="submit" value="Зарегистрировать нового пользователя">
+</form>
+<br>
+<form th:method="GET" th:action="@{/books}">
+    <input type="submit" value="Перейти к списку всех книг">
+</form>
+
+</body>
+</html>

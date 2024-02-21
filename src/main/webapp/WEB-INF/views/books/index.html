@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        td {
+            border-style: groove;/* Параметры рамки */
+            padding: 4px;/* Расстояние от текста до рамки */
+            text-align: center;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Книги</title>
+</head>
+
+<body>
+
+    <table style="width:100%" >
+        <thead>
+        <tr>
+            <th>Название книги</th>
+            <th>Автор</th>
+            <th>Свободна/Занята</th>
+            <th>Пользователь</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td>
+                <a th:href="@{/books/{id}(id=${book.getId()})}" th:text="${book.getTitle()}"></a>
+            </td>
+            <td th:text="${book.getAuthor()}"></td>
+            <td th:text="${bookDAO.getBookOwner(book.getId()).isPresent()} ? 'Занята' : 'Свободна'"></td>
+            <td>
+                <a th:if="${bookDAO.getBookOwner(book.getId()).isPresent()}"
+                   th:href="@{/people/{id}(id=${bookDAO.getBookOwner(book.getId()).get().getId()})}"
+                   th:text="${bookDAO.getBookOwner(book.getId()).get().getFullName()}"></a>
+
+                <a th:unless="${bookDAO.getBookOwner(book.getId()).isPresent()}"
+                   th:href="@{/books/{id}(id=${book.getId()})}"
+                   th:text="назначить"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <hr/>
+
+
+<form th:method="GET" th:action="@{/books/new}">
+    <input type="submit" value="Добавить новую книгу">
+</form>
+<br>
+
+<form th:method="GET" th:action="@{/people}">
+    <input type="submit" value="Перейти к списку всех пользователей">
+</form>
+
+</body>
+</html>
